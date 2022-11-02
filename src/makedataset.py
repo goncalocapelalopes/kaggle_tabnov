@@ -25,18 +25,16 @@ def create_datasets() -> None:
     for sub_file in tqdm.tqdm(sub_files):
         file_path = os.path.join(SUB_FILES, sub_file)
         train, test = read_submission_file(file_path)
-        train_all.append(pd.DataFrame(data={sub_file.split(".")[1]: train[FEATURE]}))
-        test_all.append(pd.DataFrame(data={sub_file.split(".")[1]: test[FEATURE]}))
-        #print(test[FEATURE])
-        #print(test_all)
-        #input()
+        col = sub_file.split(".")[1]
+        train_all.append(pd.DataFrame(data={col: train[FEATURE]}))
+        test_all.append(pd.DataFrame(data={col: test[FEATURE]}))
+
     train_all = pd.concat(train_all, axis=1)
     test_all = pd.concat(test_all, axis=1)
     labels = pd.read_csv(TRAIN_LABELS)
     train_all[LABEL] = labels[LABEL]
-    print(train_all.head())
+
     train_all.reset_index().to_feather(os.path.join(PROCESSED, TRAIN_FILE))
-    print(test_all.head())
     test_all.reset_index().to_feather(os.path.join(PROCESSED, TEST_FILE))
     
 
