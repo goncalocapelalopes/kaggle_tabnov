@@ -1,0 +1,3 @@
+--dimred=pca
+--model=lr
+--topfeatures=100

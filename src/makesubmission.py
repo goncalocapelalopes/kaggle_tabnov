@@ -4,6 +4,7 @@ from typing import Tuple, List
 import mlflow
 import numpy as np
 from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
 import pandas as pd
 
 from vars import *
@@ -14,29 +15,20 @@ def load_test() -> pd.DataFrame:
     data = data.reset_index(drop=True)
     return data
 
-def get_models() -> Tuple(List[LogisticRegression], List[str]):
+def get_models() -> Pipeline:
     client = mlflow.tracking.MlflowClient()
-    runs = [
-        "2f6bde0fedf2458686797fec9f1afb89",
-        "de23810ed7f045648b4b1f7cf3c25143",
-        "164369f640884512872b52db2838641a",
-        "9a3a94a18d934ea684aff9a81d52f373",
-        "778adb810a7b4cde94fc909a8eff5021"
-    ]
-    
-    models = []
-    for run in runs:
-        models.append(mlflow.sklearn.load_model(client.download_artifacts(run, "model")))
-    return models, models[0].feature_names_in_
+
+    run = "cf1ec42bc1bc43db901711fd29c69b53"
+    model = mlflow.sklearn.load_model(client.download_artifacts(run, "best_estimator"))
+    return model
 
 
 def predict(data: pd.DataFrame, 
-            models: List[LogisticRegression], 
-            features: List[str]) -> None:
-    X_test = data[features]
+            model: List[LogisticRegression]) -> None:
+    X_test = data
     d = {
         "id": np.arange(20000, 40000),
-        "pred": np.sum([m.predict_proba(X_test)[:,1] for m in models], axis=0) / len(models)
+        "pred": model.predict_proba(X_test)[:,1]
     }
     assert len(X_test) == len(d["pred"])
 
@@ -44,5 +36,5 @@ def predict(data: pd.DataFrame,
     
 if __name__ == "__main__":
     df = load_test()
-    models, features = get_models()
-    predict(df, models, features)
+    model = get_models()
+    predict(df, model)

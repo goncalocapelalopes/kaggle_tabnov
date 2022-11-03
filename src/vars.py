@@ -12,3 +12,6 @@ XGB_EXPERIMENT = "XGBoost"
 FEATURE = "pred"
 LABEL = "label"
 
+EXP_MAP = {
+    "lr": LR_EXPERIMENT,
+}
