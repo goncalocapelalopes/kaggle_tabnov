@@ -8,6 +8,7 @@ TRAIN_FILE = "train.feather"
 TEST_FILE = "test.feather"
 
 LR_EXPERIMENT = "K-Folds Logistic Regression"
+XGB_EXPERIMENT = "XGBoost"
 FEATURE = "pred"
 LABEL = "label"
 
